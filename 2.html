@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Finance: EMI Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #6ab7ff, #8c9eff);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .calculator-container {
+            width: 350px;
+            height: 450px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .calculator-container h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .input-group input {
+            width: calc(100% - 40px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .input-group input[type="number"]::-webkit-outer-spin-button,
+        .input-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+
+
+        .input-group .symbol {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .calculate-btn:hover {
+            background-color: #45a049;
+        }
+
+        .emi-result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            width: calc(100% - 40px);
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator-container">
+        <h2>Smart Finance EMI Calculator</h2>
+        <div class="input-group">
+            <label for="principal">Loan Amount</label>
+            <input type="text" id="principal" placeholder="Enter loan amount" oninput="formatNumber(this)">
+        </div>
+        <div class="input-group">
+            <label for="interest">Annual Interest Rate (%)</label>
+            <input type="number" id="interest" placeholder="Enter annual interest rate">
+        </div>
+        <div class="input-group">
+            <label for="duration">Loan Term (Months)</label>
+            <input type="number" id="duration" placeholder="Enter loan term in months">
+        </div>
+        <button class="calculate-btn" onclick="calculateEMI()">Calculate EMI</button>
+        <div class="emi-result" id="emiResult">Your estimated monthly payment will appear here.</div>
+        <div class="footer">Provided by Smart Finance - Making financial planning easier</div>
+    </div>
+
+    <script>
+        function formatNumber(input) {
+            // Remove existing commas and non-numeric characters
+            let value = input.value.replace(/\D/g, '');
+
+            // Add commas for thousands separator
+            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            // Update input value
+            input.value = value;
+        }
+
+        function calculateEMI() {
+         
+            const principal = parseFloat(document.getElementById('principal').value.replace(/,/g, ''));
+            const interestRate = parseFloat(document.getElementById('interest').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+
+            // Validation
+            if (isNaN(principal) || isNaN(interestRate) || isNaN(duration) || principal <= 0 || interestRate <= 0 || duration <= 0) {
+                document.getElementById('emiResult').innerText = 'Please enter valid values';
+                return;
+            }
+
+            // Calculation
+            const monthlyInterestRate = (interestRate / 100) / 12;
+            const emi = (principal * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, duration)) / (Math.pow(1 + monthlyInterestRate, duration) - 1);
+
+            // Display result with formatted number
+            document.getElementById('emiResult').innerText = `Estimated Monthly Payment: ₹${emi.toFixed(2)}`;
+        }
+    </script>
+</body>
+
+</html>
